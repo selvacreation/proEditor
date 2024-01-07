@@ -1,0 +1,206 @@
+    <!-- <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Record and Upload Video</title>
+    </head>
+    <body>
+        <video id="video" width="640" height="480" autoplay></video>
+        <button id="startRecord">Start Recording</button>
+        <button id="stopRecord" disabled>Stop Recording</button>
+        <button id="uploadVideo" disabled>Upload Video</button>
+    
+        <script>
+            const video = document.getElementById('video');
+            const startRecordBtn = document.getElementById('startRecord');
+            const stopRecordBtn = document.getElementById('stopRecord');
+            const uploadVideoBtn = document.getElementById('uploadVideo');
+    
+            let mediaRecorder;
+            let recordedChunks = [];
+    
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+    
+                    mediaRecorder = new MediaRecorder(stream);
+    
+                    mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            recordedChunks.push(event.data);
+                        }
+                    };
+    
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                        const url = URL.createObjectURL(blob);
+    
+                        video.src = url;
+    
+                        // Enable upload button after recording stops
+                        uploadVideoBtn.disabled = false;
+                    };
+                })
+                .catch((error) => {
+                    console.error('Error accessing camera:', error);
+                });
+    
+            startRecordBtn.addEventListener('click', () => {
+                mediaRecorder.start();
+                startRecordBtn.disabled = true;
+                stopRecordBtn.disabled = false;
+            });
+    
+            stopRecordBtn.addEventListener('click', () => {
+                mediaRecorder.stop();
+                startRecordBtn.disabled = false;
+                stopRecordBtn.disabled = true;
+            });
+    
+            uploadVideoBtn.addEventListener('click', () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const formData = new FormData();
+                formData.append('video', blob, 'recorded-video.webm');
+    
+                fetch('/upload_video/', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    alert(data.status);
+                })
+                .catch(error => {
+                    console.error('Error uploading video:', error);
+                    alert('Error uploading video');
+                });
+            });
+        </script>
+    </body>
+    </html>
+    if request.method == 'POST' and request.FILES.get('video'):
+        video_file = request.FILES['video']
+        
+        # Here you can perform further processing on the video, e.g., pass it to a machine learning model.
+        
+        return JsonResponse({'status': 'success'}) -->
+    
+
+
+
+
+
+
+        <!-- // navigator.mediaDevices.getUserMedia({video:true})
+        // .then((stream)=>{
+        //     video.src = stream
+
+        //     console.log("test1")
+        //     mediaRecorder = new MediaRecorder(stream)
+        //     mediaRecorder.ondataavailable = (event)=>{
+        //         if(event.data.size > 0)
+        //         {
+        //             recordedChunks.append(event.data)
+        //         }
+        //     }
+        //     mediaRecorder.onstop = ()=>{
+        //         const blob = new Blob(recordedChunks, {type: "video/webm"})
+        //         const url = url.createObjectURL(blob)
+
+        //         video.src = url
+        //     }
+        // })
+        // .catch((error) => {
+        //     console.error('Error accessing camera:', error);
+        // }); -->
+
+
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Video Recording Example</title>
+        </head>
+        <body>
+            <h1>Video Recording Example</h1>
+        
+            <video id="combinedVideo" width="640" height="480" autoplay playsinline controls></video>
+            <br>
+            <button id="startRecording">Start Recording</button>
+            <button id="stopRecording" disabled>Stop Recording</button>
+        
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const combinedVideo = document.getElementById('combinedVideo');
+                    const startRecordingButton = document.getElementById('startRecording');
+                    const stopRecordingButton = document.getElementById('stopRecording');
+                    let mediaRecorder;
+                    let mediaSource;
+                    let recordedChunks = [];
+        
+                    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                        .then(function (stream) {
+                            combinedVideo.srcObject = stream;
+                            combinedVideo.play();
+        
+                            mediaRecorder = new MediaRecorder(stream);
+        
+                            mediaRecorder.ondataavailable = function (e) {
+                                if (e.data.size > 0) {
+                                    recordedChunks.push(e.data);
+                                    appendRecordedChunks();
+                                }
+                            };
+        
+                            mediaRecorder.onstop = function () {
+                                appendRecordedChunks(true);
+                                recordedChunks = [];
+                            };
+        
+                            startRecordingButton.addEventListener('click', function () {
+                                mediaRecorder.start();
+                                startRecordingButton.disabled = true;
+                                stopRecordingButton.disabled = false;
+                            });
+        
+                            stopRecordingButton.addEventListener('click', function () {
+                                mediaRecorder.stop();
+                                startRecordingButton.disabled = false;
+                                stopRecordingButton.disabled = true;
+                            });
+        
+                            // Initialize the MediaSource
+                            mediaSource = new MediaSource();
+                            combinedVideo.src = URL.createObjectURL(mediaSource);
+                            mediaSource.addEventListener('sourceopen', handleSourceOpen, false);
+                        })
+                        .catch(function (err) {
+                            console.error('Error accessing media devices:', err);
+                        });
+        
+                    function handleSourceOpen(event) {
+                        const sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8, opus"');
+                    }
+        
+                    function appendRecordedChunks(endOfStream) {
+                        if (recordedChunks.length > 0) {
+                            const sourceBuffer = mediaSource.sourceBuffers[0];
+                            sourceBuffer.appendBuffer(recordedChunks.shift());
+        
+                            if (endOfStream) {
+                                sourceBuffer.addEventListener('updateend', function () {
+                                    mediaSource.endOfStream();
+                                    combinedVideo.play();
+                                }, { once: true });
+                            }
+                        }
+                    }
+                });
+            </script>
+        </body>
+        </html>
+        

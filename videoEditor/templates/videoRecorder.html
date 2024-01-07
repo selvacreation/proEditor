@@ -1,0 +1,74 @@
+{% load static %}
+<!-- django@selva -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'features.css' %}">
+        <link rel="stylesheet" href="{% static 'recorder.css' %}">
+    </head>
+    <body>
+        {% include 'header.html' %}
+        <div class="recorderTag" style="display: none;">
+            <div class="blackBG"></div>
+            <div class="camTag" style="display: flex;">
+                <video id="video" autoplay ></video>
+                <!-- <video controls>
+                    <source id="video" type="video/webm">
+                    Your browser does not support the video tag.
+                </video> -->
+                <div id="RecordBtn">
+                    <img id="VideoRecordBtn" startRec="true" style="margin-left: 45%;height: 50px;" src="{% static 'images/recorder.png' %}" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="backgroundImgRecord">
+            <img src="{% static 'images/background_img_purple.webp' %}" style="width: 100%;height: 100%;" alt="">
+        </div>
+        <div class="txtAndImgBanner">
+            <div class="txtAndImgBannerTxt">
+                <h1 style="font-size: 45px;">Free Online Camera Recorder</h1>
+                <h5 style="font-size: 20px;">Record your screen, webcam, and voice with one click.</h5>
+                <p class="txtAndImgBannerTxtP">Start Recording</p>
+            </div>
+            <div class="txtAndImgBannerImg">
+                <img src="{% static 'images/RecorderLap.png' %}" alt="">
+            </div>
+        </div>
+        <div class="MoongList">
+            <img src="{% static 'images/google.png' %}" style="height: 40px;margin-right: 20px;" alt="">
+            <img src="{% static 'images/amazon.png' %}" style="height: 40px;margin-right: 20px;" alt="">
+            <img src="{% static 'images/microsoft.png' %}" style="height: 40px;margin-right: 20px;" alt="">
+            <img src="{% static 'images/walmart.png' %}" style="height: 40px;" alt="">
+        </div>
+        <div class="showFeatures">
+            <div class="showFeaturesDiv">
+                <h1>More Video Tools for Your Needs</h1>
+                <div class="showFeaturesDivList">
+                    <div style="display: flex;">
+                        <p id="showFeaturesDivListP">Bubble Video</p>
+                        <p id="showFeaturesDivListP">Trim Video</p>
+                    </div>
+                    <div style="display: flex;">
+                        <p id="showFeaturesDivListP">Crop Video</p>
+                        <p id="showFeaturesDivListP">Merge Video</p>
+                    </div>
+                    <div style="display: flex;">
+                        <p id="showFeaturesDivListP">Background Music</p>
+                        <p id="showFeaturesDivListP">Text To Speech</p>
+                    </div>
+                    <div style="display: flex;">
+                        <p id="showFeaturesDivListP" style="width: 40%;">Trim Audio</p>
+                    </div>
+                </div>
+            </div>
+            <div class="showFeaturesImg">
+                <img src="{% static 'images/record_feature.webp' %}" alt="">
+            </div>
+        </div>
+    </body>
+    <script src="{% static 'script/recorder.js' %}"></script>
+
+
+
+
+
